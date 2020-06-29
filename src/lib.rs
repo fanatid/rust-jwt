@@ -175,22 +175,27 @@ impl<T> Jwt<T> where
     }
 }
 
-#[test]
-fn test_sign() {
-    //  Verified with https://jwt.io/
+#[cfg(test)]
+mod tests {
+    use super::*;
 
-    #[derive(Serialize)]
-    struct TestBody {
-        serialize: String
+    #[test]
+    fn test_sign() {
+        //  Verified with https://jwt.io/
+
+        #[derive(Serialize)]
+        struct TestBody {
+            serialize: String
+        }
+
+        let rsa_key = match RSAKey::from_pem("random_rsa_for_testing") {
+            Ok(x) => x,
+            Err(e) => panic!("{}", e)
+        };
+
+        let jwt = Jwt::new(TestBody { serialize: "me".to_string() },
+                        rsa_key,
+                        None);
+        assert_eq!(jwt.finalize().unwrap(), "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzZXJpYWxpemUiOiJtZSJ9.nJIFpAKQWE5Mt1TQS2eDqoLVANJf809pCegB7herGYZ0Lqb1eV9MAv_Cz6lyaq87v1StC48e-U3Lp6oVezsQ-mUg5h92hFEEkzKIoJOYE6N-BEaVuy73Qf2s7c6W3ZdD0U3oR6PiEO9-FnB5bsiQlIfgzykmDUSjo2CmYpAypF9sT43by4tvSMwUwNZ_NuTI3ASPqdk5wKAkrCOJjayhyKZR7KrqeUmZdqS0Un8NSpr53Zd6SdCYTpDSGsKF_mwYV309q7zAbzRhWN-YTYsdB6Em5QoXo0ZUuNIigfprOQP1MVFvznbeonQvu6OHzJMIFhhUip8UCFNp6wzsqm4syQ==");
     }
-
-    let rsa_key = match RSAKey::from_pem("random_rsa_for_testing") {
-        Ok(x) => x,
-        Err(e) => panic!("{}", e)
-    };
-
-    let jwt = Jwt::new(TestBody { serialize: "me".to_string() },
-                       rsa_key,
-                       None);
-    assert_eq!(jwt.finalize().unwrap(), "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzZXJpYWxpemUiOiJtZSJ9.nJIFpAKQWE5Mt1TQS2eDqoLVANJf809pCegB7herGYZ0Lqb1eV9MAv_Cz6lyaq87v1StC48e-U3Lp6oVezsQ-mUg5h92hFEEkzKIoJOYE6N-BEaVuy73Qf2s7c6W3ZdD0U3oR6PiEO9-FnB5bsiQlIfgzykmDUSjo2CmYpAypF9sT43by4tvSMwUwNZ_NuTI3ASPqdk5wKAkrCOJjayhyKZR7KrqeUmZdqS0Un8NSpr53Zd6SdCYTpDSGsKF_mwYV309q7zAbzRhWN-YTYsdB6Em5QoXo0ZUuNIigfprOQP1MVFvznbeonQvu6OHzJMIFhhUip8UCFNp6wzsqm4syQ==");
 }
