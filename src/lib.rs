@@ -152,15 +152,17 @@ where
     }
 
     fn encode(param: &T) -> Result<String, JwtErr> {
-        Ok(encode_config(serde_json::to_string(&param)?.as_bytes(), base64::URL_SAFE).to_owned())
+        Ok(encode_config(
+            serde_json::to_string(&param)?.as_bytes(),
+            base64::URL_SAFE,
+        ))
     }
 
     fn encode_header(&self) -> Result<String, JwtErr> {
         Ok(encode_config(
             serde_json::to_string(&self.header()?)?.as_bytes(),
             base64::URL_SAFE,
-        )
-        .to_owned())
+        ))
     }
 
     fn header(&self) -> Result<JwtHeader, JwtErr> {
