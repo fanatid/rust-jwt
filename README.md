@@ -3,9 +3,9 @@
 [![](http://meritbadge.herokuapp.com/smpl-jwt)](https://crates.io/crates/smpl-jwt)
 [![Join the chat at https://gitter.im/durch/rust-jwt](https://badges.gitter.im/durch/rust-jwt.svg)](https://gitter.im/durch/rust-jwt?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-## rust-jwt [[docs](https://durch.github.io/rust-jwt)]
+## rust-jwt [[docs](https://docs.rs/smpl-jwt)]
 
-Very simple [JWT](https://jwt.io/) generation lib, provides a Jwt struct which can be *finalised* to produce an encoded and signed [String](https://doc.rust-lang.org/std/string/struct.String.html) representation. 
+Very simple [JWT](https://jwt.io/) generation lib, provides a JWT struct which can be *finalised* to produce an encoded and signed [String](https://doc.rust-lang.org/std/string/struct.String.html) representation.
 
 Generic over [serde::ser::Serialize](https://docs.serde.rs/serde/ser/trait.Serialize.html) trait.
 

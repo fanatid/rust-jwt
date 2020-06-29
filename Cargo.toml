@@ -7,7 +7,7 @@ repository = "https://github.com/durch/rust-jwt"
 readme = "README.md"
 keywords = ["JWT"]
 license = "MIT"
-documentation = "https://durch.github.io/rust-jwt"
+documentation = "https://docs.rs/smpl-jwt"
 edition = "2018"
 
 [dependencies]
