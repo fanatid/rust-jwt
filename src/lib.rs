@@ -1,15 +1,14 @@
+use std::fmt;
+use std::fs::File;
+use std::io::Read;
+use std::str::FromStr;
+
 use base64::encode_config;
 use openssl::hash::MessageDigest;
 use openssl::pkey::{PKey, Private};
 use openssl::sign::Signer;
-use simpl::err;
-use std::str::FromStr;
-use std::*;
-
 use serde::{Deserialize, Serialize};
-
-use std::fs::File;
-use std::io::prelude::*;
+use simpl::err;
 
 err!(JwtErr,
 {
