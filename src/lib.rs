@@ -62,14 +62,14 @@ pub struct RSAKey {
 }
 
 impl RSAKey {
+    pub fn new(key: PKey<Private>) -> Self {
+        RSAKey { key }
+    }
+
     pub fn from_pem(filename: &str) -> Result<Self, JwtErr> {
         Ok(RSAKey {
             key: Self::read_keyfile(filename)?,
         })
-    }
-
-    pub fn from_pkey(pkey: PKey<Private>) -> Result<Self, JwtErr> {
-        Ok(RSAKey { key: pkey })
     }
 
     fn read_keyfile(keyfile: &str) -> Result<PKey<Private>, JwtErr> {
@@ -79,13 +79,14 @@ impl RSAKey {
         Ok(PKey::private_key_from_pem(&buffer)?)
     }
 
-    fn produce_key(&self) -> &PKey<Private> {
+    fn get_ref(&self) -> &PKey<Private> {
         &self.key
     }
 }
 
 impl FromStr for RSAKey {
     type Err = JwtErr;
+
     fn from_str(s: &str) -> Result<Self, JwtErr> {
         Ok(RSAKey {
             key: PKey::private_key_from_pem(s.as_bytes())?,
@@ -141,10 +142,15 @@ impl<T: serde::ser::Serialize> fmt::Display for Jwt<T> {
 /// }
 /// ```
 
-impl<T> Jwt<T>
-where
-    T: Serialize,
-{
+impl<T: Serialize> Jwt<T> {
+    pub fn new(body: T, jwt_key: RSAKey, algo: Option<Algorithm>) -> Jwt<T> {
+        Jwt {
+            body,
+            pkey: jwt_key,
+            algo: algo.unwrap_or(Algorithm::RS256),
+        }
+    }
+
     fn input(&self) -> Result<String, JwtErr> {
         let header = &self.encode_header()?;
         let body = Self::encode(&self.body)?;
@@ -173,7 +179,7 @@ where
     }
 
     fn sign(&self) -> Result<String, JwtErr> {
-        let pkey = self.pkey.produce_key();
+        let pkey = self.pkey.get_ref();
         let mut signer = Signer::new(self.algo.signer(), pkey)?;
         signer.update(self.input()?.as_bytes())?;
         let signed: Vec<u8> = signer.sign_to_vec()?;
@@ -182,14 +188,6 @@ where
 
     pub fn finalize(&self) -> Result<String, JwtErr> {
         Ok(format!("{}.{}", &self.input()?, &self.sign()?))
-    }
-
-    pub fn new(body: T, jwt_key: RSAKey, algo: Option<Algorithm>) -> Jwt<T> {
-        Jwt {
-            body,
-            pkey: jwt_key,
-            algo: algo.unwrap_or(Algorithm::RS256),
-        }
     }
 }
 
