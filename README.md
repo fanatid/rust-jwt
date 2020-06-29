@@ -11,29 +11,31 @@ Generic over [serde::ser::Serialize](https://docs.serde.rs/serde/ser/trait.Seria
 
 ### Usage
 
-```rust
-#[macro_use]
-extern crate serde_derive;
-extern crate serde;
-extern crate smpl_jwt;
+Jwt can be finalized to produce an encoded and signed string representation.
 
+```rust
 use serde::Serialize;
 use smpl_jwt::{Jwt, RSAKey};
 
+#[derive(Serialize)]
+struct ExampleStruct {
+    field: String,
+}
+
 fn main() {
-  #[derive(Serialize)]
-  struct ExampleStruct {
-    field: String
-  }
+    let rsa_key = match RSAKey::from_pem("random_rsa_for_testing") {
+        Ok(x) => x,
+        Err(e) => panic!("{}", e),
+    };
 
-  let rsa_key = match RSAKey::from_pem("random_rsa_for_testing") {
-    Ok(x) => x,
-    Err(e) => panic!("{}", e)
-  };
+    let jwt = Jwt::new(
+        ExampleStruct {
+            field: String::from("test"),
+        },
+        rsa_key,
+        None,
+    );
 
-  let jwt = Jwt::new(ExampleStruct{field: String::from("test")},
-                    rsa_key,
-                    None);
-  println!("{}", jwt);
+    println!("{}", jwt);
 }
 ```

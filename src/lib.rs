@@ -1,3 +1,7 @@
+#[cfg(doctest)]
+#[macro_use]
+extern crate doc_comment;
+
 use std::fmt;
 use std::fs::File;
 use std::io::Read;
@@ -112,36 +116,6 @@ impl<T: serde::ser::Serialize> fmt::Display for Jwt<T> {
     }
 }
 
-/// Jwt can be finalized to produce an encoded and signed string representation
-///
-/// ### Example
-///
-/// ```
-/// extern crate serde;
-/// extern crate smpl_jwt;
-///
-/// use serde::Serialize;
-/// use smpl_jwt::{Jwt, RSAKey};
-///
-/// fn main() {
-///   #[derive(Serialize)]
-///   struct ExampleStruct {
-///     field: String
-///   }
-///
-///   let rsa_key = match RSAKey::from_pem("random_rsa_for_testing") {
-///     Ok(x) => x,
-///     Err(e) => panic!("{}", e)
-///   };
-///
-///   let jwt = Jwt::new(ExampleStruct{field: String::from("test")},
-///                     rsa_key,
-///                     None);
-///
-///   println!("{}", jwt);
-/// }
-/// ```
-
 impl<T: Serialize> Jwt<T> {
     pub fn new(body: T, jwt_key: RSAKey, algo: Option<Algorithm>) -> Jwt<T> {
         Jwt {
@@ -190,6 +164,9 @@ impl<T: Serialize> Jwt<T> {
         Ok(format!("{}.{}", &self.input()?, &self.sign()?))
     }
 }
+
+#[cfg(doctest)]
+doc_comment!(include_str!("../README.md"));
 
 #[cfg(test)]
 mod tests {
