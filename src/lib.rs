@@ -1,6 +1,3 @@
-#[macro_use]
-extern crate serde_derive;
-
 use simpl::err;
 use std::*;
 use std::str::FromStr;
@@ -9,7 +6,7 @@ use openssl::pkey::{PKey, Private};
 use openssl::hash::MessageDigest;
 use base64::encode_config;
 
-use serde::ser::Serialize;
+use serde::{Serialize, Deserialize};
 
 use std::io::prelude::*;
 use std::fs::File;
@@ -109,9 +106,6 @@ impl<T: serde::ser::Serialize> fmt::Display for Jwt<T> {
 /// ### Example
 ///
 /// ```
-///
-/// #[macro_use]
-/// extern crate serde_derive;
 /// extern crate serde;
 /// extern crate smpl_jwt;
 ///
